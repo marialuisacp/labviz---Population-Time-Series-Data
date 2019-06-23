@@ -7,4 +7,7 @@ Using:
 * Data Population Time Series. ([Avaible in Kaggle](https://www.kaggle.com/census/population-time-series-data))
 
 
+See online:
+https://marialuisacp.github.io/labviz---Population-Time-Series-Data/
+
 ![Imagem do projeto ](visualization.v1.png)
