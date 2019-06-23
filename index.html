@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<meta charset='utf-8'>
+
+<!-- CSS Styles -->
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Nunito+Sans:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i|Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&display=swap');
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  body * {
+    font-family: 'Nunito Sans', sans-serif;
+    color: #898989;
+  }
+  h1 {
+    color: #6E248D;
+  }
+  h1, h2 {
+    font-family: 'Nunito', sans-serif;
+  }
+  h2 {
+    font-style: italic;
+    color: #8E44AD;
+  }
+  #area-visualization,
+  .about-visualization {
+    width: 800px;
+    display: block;
+    margin: 0 auto;
+  }
+  #area-visualization svg {
+    display: block;
+    margin: 0 auto;
+  }
+  .about-visualization {
+    margin-bottom: 64px;
+  }
+  .about-visualization .source {
+    text-align: right;
+    font-size: .7em
+  }
+  .about-visualization .source span {
+    font-style: italic;
+    font-weight: bold;
+  }
+</style>
+
+<!-- HTML components -->
+<body>
+  <div class='about-visualization'>
+    <h1> Population Time Series Data </h1>
+    <h2> Explore Time Series from the U.S. Census Bureau </h2>
+    <p>
+      This is a dataset from the U.S. Census Bureau hosted by the Federal Reserve Economic Database (FRED). FRED has a data platform found here and they update their information according the amount of data that is brought in. Explore the U.S. Census Bureau using Kaggle and all of the data sources available through the U.S. Census Bureau organization page!
+    </p>
+  </div>
+  <div id='area-visualization'>
+  </div>
+  <div class='about-visualization'>
+    <p class="source">
+      <span>Source:</span>
+      <a href='https://www.kaggle.com/census/population-time-series-data' target='_blank'>
+        Population Time Series Data -
+        <span>Explore Time Series from the U.S. Census Bureau</span> (Available in Kaggle)
+      </a>
+    </p>
+  </div>
+</body>
+
+<!-- JS scripts -->
+<script src='//d3js.org/d3.v4.min.js'></script>
+<script>
+
+  const margin = { top: 10, right: 30, bottom: 30, left: 80 },
+        width = 800 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+  let svg = d3.select('#area-visualization')
+              .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+              .append('g')
+                .attr('transform',
+                      'translate(' + margin.left + ',' + margin.top + ')');
+
+  d3.csv('national-population.csv',
+    (d) => {
+      return { date : d3.timeParse('%Y-%m-%d')(d.date), value : d.value }
+    },
+    (data) => {
+      let x = d3.scaleTime()
+        .domain(d3.extent(data, (d) => { return d.date; }))
+        .range([ 0, width ]);
+      svg.append('g')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x));
+
+      let y = d3.scaleLinear()
+        .domain([0, d3.max(data, (d) => { return +d.value; })])
+        .range([ height, 0 ]);
+      svg.append('g')
+        .call(d3.axisLeft(y).tickFormat((d) => ((d/1000000) + 'M')));
+
+      svg.append('path')
+        .datum(data)
+        .attr('fill', '#BE90D4')
+        .attr('stroke-linecap', 'butt')
+        .attr('stroke', '#7E349D')
+        .attr('stroke-width', .5)
+        .attr('d', d3.area()
+          .x((d) => { return x(d.date) })
+          .y0(y(0))
+          .y1((d) => { return y(d.value) })
+          )
+  });
+</script>
