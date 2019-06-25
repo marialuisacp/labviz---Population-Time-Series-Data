@@ -8,6 +8,6 @@ Using:
 
 
 See online:
-https://marialuisacp.github.io/labviz---Population-Time-Series-Data/
+https://marialuisacp.github.io/time-serie-Population-Time-Series-Data/
 
 ![Imagem do projeto ](visualization.v1.png)
